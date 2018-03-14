@@ -3,7 +3,7 @@ import greenfoot.GreenfootImage;
 public class Level1 extends Level {
     private boolean firstRun = true;
 
-    protected Level1(int levelNumber) {
+    public Level1(int levelNumber) {
         super(levelNumber);
     }
 

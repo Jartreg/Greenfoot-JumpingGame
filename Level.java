@@ -2,7 +2,7 @@ public abstract class Level {
     private final int levelNumber;
     private boolean completed;
 
-    protected Level(int levelNumber) {
+    public Level(int levelNumber) {
         this.levelNumber = levelNumber;
     }
 

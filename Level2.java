@@ -1,5 +1,5 @@
 public class Level2 extends Level {
-    protected Level2(int levelNumber) {
+    public Level2(int levelNumber) {
         super(levelNumber);
     }
 
@@ -8,42 +8,52 @@ public class Level2 extends Level {
         int bottom = world.getHeight();
         int cells = GameWorld.CELL_SIZE;
         int floor = bottom - cells * 2;
+        RelativeActor.Alignment bottomleft = RelativeActor.Alignment.BOTTOMLEFT;
 
         world.setMinX(0);
-        world.setMaxX(1072);
+        world.setMaxX(67 * cells);
 
-        world.addRelativeActor(new Wall(56, 2), cells, bottom, RelativeActor.Alignment.BOTTOMLEFT);
+        // Boden
+        world.addRelativeActor(new Wall(56, 2), cells, bottom, bottomleft);
 
-        world.addRelativeActor(new Character(), 300, floor, RelativeActor.Alignment.BOTTOMCENTER);
+        // Wand links und rechts
+        world.addRelativeActor(new Wall(1, 40), 0, bottom, bottomleft);
+        world.addRelativeActor(new Wall(1, 40), 67 * cells, 0, bottomleft);
 
-        world.addRelativeActor(new Wall(1, 50), 8, 0);
-        world.addRelativeActor(new Wall(1, 50), 1080, 0);
+        // Erste Plattform
+        world.addRelativeActor(new Wall(10, 1), 5 * cells, floor - 4 * cells, bottomleft);
+        world.addRelativeActor(new SlimeWall(3, 3), 15 * cells, floor - 4 * cells, bottomleft);
 
-        world.addRelativeActor(new Wall(10, 1), 160, 296);
-        world.addRelativeActor(new SlimeWall(3, 3), 264, 280);
+        // Zweite Plattform
+        world.addRelativeActor(new IceWall(8, 1), 20 * cells, floor - 11 * cells, bottomleft);
 
-        world.addRelativeActor(new IceWall(8, 1), 386, 184);
+        // Dritte Plattform
+        world.addRelativeActor(new Wall(3, 4), 4 * cells, floor - 14 * cells, bottomleft);
+        world.addRelativeActor(new Wall(4, 1), 7 * cells, floor - 14 * cells, bottomleft);
+        world.addRelativeActor(new EasterEgg(), 5.5 * cells, floor - 18 * cells, RelativeActor.Alignment.BOTTOMCENTER);
 
-        world.addRelativeActor(new Spikes(Spikes.Direction.TOP, 1), cells * 28, floor, RelativeActor.Alignment.BOTTOMLEFT);
-        world.addRelativeActor(new Spikes(Spikes.Direction.TOP, 2), cells * 32, floor, RelativeActor.Alignment.BOTTOMLEFT);
+        // Eisweg und Schleimblock
+        world.addRelativeActor(new IceWall(20, 1), 16 * cells, floor - 20 * cells, bottomleft);
+        world.addRelativeActor(new SlimeWall(5, 5), 39 * cells, floor - 7 * cells, bottomleft);
 
-        world.addRelativeActor(new Wall(4, 1), 144, 136);
-        world.addRelativeActor(new Wall(3, 4), 88, 112);
+        // Eisplattform vor dem Ziel
+        world.addRelativeActor(new IceWall(10, 1), 47 * cells, floor - 15 * cells, bottomleft);
+        world.addRelativeActor(new Spikes(Spikes.Direction.LEFT, 3), 56.5 * cells, floor - 16 * cells, bottomleft);
 
-        world.addRelativeActor(new IceWall(20, 1), 416, 40);
-        world.addRelativeActor(new SlimeWall(5, 5), 664, 216);
-        world.addRelativeActor(new IceWall(10, 1), 832, 120);
+        // Hindernisse unter der zweiten Plattform
+        world.addRelativeActor(new Spikes(Spikes.Direction.TOP, 1), cells * 28, floor, bottomleft);
+        world.addRelativeActor(new Spikes(Spikes.Direction.TOP, 2), cells * 32, floor, bottomleft);
 
-        world.addRelativeActor(new Wall(8, 2), 848, 352);
-        world.addRelativeActor(new Wall(5, 1), 872, 328);
-        world.addRelativeActor(new Wall(10, 21), 912, bottom, RelativeActor.Alignment.BOTTOMLEFT);
+        // Osterei unter dem Ziel
+        world.addRelativeActor(new Wall(8, 2), 49 * cells, floor, bottomleft);
+        world.addRelativeActor(new Wall(5, 1), 52 * cells, floor - 2 * cells, bottomleft);
+        world.addRelativeActor(new EasterEgg(), 55.5 * cells, floor - 3 * cells, RelativeActor.Alignment.BOTTOMCENTER);
 
-        world.addRelativeActor(new Spikes(Spikes.Direction.LEFT, 3), 904, 112, RelativeActor.Alignment.BOTTOMLEFT);
+        // Ziel
+        world.addRelativeActor(new Wall(10, 21), 57 * cells, bottom, bottomleft);
+        world.addRelativeActor(new Exit(), 62.5 * cells, bottom - 21 * cells, RelativeActor.Alignment.BOTTOMCENTER);
 
-        world.addRelativeActor(new EasterEgg(), 88, 80, RelativeActor.Alignment.BOTTOMCENTER);
-        world.addRelativeActor(new EasterEgg(), cells * 55.5, floor - cells * 3, RelativeActor.Alignment.BOTTOMCENTER);
-
-        world.addRelativeActor(new Exit(), 912 + cells * 5, bottom - cells * 21, RelativeActor.Alignment.BOTTOMCENTER);
+        world.addRelativeActor(new Character(), 20 * cells, floor, bottomleft);
     }
 
     @Override
