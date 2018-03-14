@@ -1,5 +1,5 @@
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.stream.Stream;
 
 public class LevelSelectionMenu extends Menu {
     private final HashMap<String, Level> levels = new HashMap<>();
@@ -13,11 +13,14 @@ public class LevelSelectionMenu extends Menu {
     }
 
     private static String[] createMenuItems(Level[] levels) {
-        return Stream.concat(
-                Stream.of(levels)
-                        .map(l -> "Level " + l.getLevelNumber()),
-                Stream.of("Abbrechen")
-        ).toArray(String[]::new);
+        ArrayList<String> items = new ArrayList<>();
+
+        for (Level level : levels) { // Für jedes Level
+            items.add("Level " + level.getLevelNumber());
+        }
+
+        items.add("Abbrechen"); // und zum Abbrechen
+        return items.toArray(new String[0]);
     }
 
     @Override
