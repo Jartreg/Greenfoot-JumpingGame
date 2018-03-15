@@ -159,10 +159,8 @@ public class GameWorld extends World {
         completedScreenshot = null;
 
         // Level bauen
-        if (currentLevel != null) {
-            currentLevel.reset();
+        if (currentLevel != null)
             currentLevel.buildWorld(this);
-        }
     }
 
     /**

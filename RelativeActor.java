@@ -66,15 +66,6 @@ public class RelativeActor extends GameActor {
         setLocation((double) x + worldX, (double) y + worldY);
     }
 
-    @Override
-    protected void addedToWorld(World world) {
-        super.addedToWorld(world);
-
-        worldX = (int) getWorld().getWorldX();
-        worldY = (int) getWorld().getWorldY();
-        updateLocation();
-    }
-
     /**
      * Gibt die relative X-Koordinate des Actors zurück
      * @return die relative X-Koordinate

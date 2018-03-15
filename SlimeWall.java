@@ -6,15 +6,11 @@ import greenfoot.GreenfootImage;
  * Beim Laufen ist der Spieler langsamer.
  */
 public class SlimeWall extends Wall {
-    public static final Color COLOR = new Color(114, 193, 114);
+    public static final Color COLOR = new Color(107, 225, 107);
     public static final double FRICTION = DEFAULT_FRICTION * 1.5;
 
     public SlimeWall(int width, int height) {
         super(width, height);
-
-        GreenfootImage image = getImage();
-        image.setColor(new Color(100, 255, 100, 130));
-        image.fill();
     }
 
     @Override

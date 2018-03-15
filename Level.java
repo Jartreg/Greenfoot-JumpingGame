@@ -54,8 +54,4 @@ public abstract class Level {
      * @return die minimale Anzahl an Ostereiern, die der Spieler einsammeln soll
      */
     public abstract int getMinEasterEggCount();
-
-    public void reset() {
-
-    }
 }
