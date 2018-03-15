@@ -21,7 +21,7 @@ public class Level2 extends Level {
 
         // Wand links und rechts
         world.addRelativeActor(new Wall(1, 40), 0, bottom, bottomleft);
-        world.addRelativeActor(new Wall(1, 40), 67 * cells, 0, bottomleft);
+        world.addRelativeActor(new Wall(1, 40), 67 * cells, bottom, bottomleft);
 
         // Erste Plattform
         world.addRelativeActor(new Wall(10, 1), 5 * cells, floor - 4 * cells, bottomleft);
