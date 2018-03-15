@@ -3,6 +3,9 @@ import greenfoot.Color;
 import greenfoot.GreenfootImage;
 import greenfoot.World;
 
+/**
+ * Der abgedunkelte Hintergrund von Menüs
+ */
 public class Overlay extends Actor {
     private boolean visible = true;
     private double animationPos;
@@ -22,19 +25,24 @@ public class Overlay extends Actor {
 
     @Override
     public void act() {
+        // Die Animation läuft von 0 bis 1
         if (animationPos < 1) {
-            if (visible) {
-                animationPos += 0.01;
+            if (visible) { // Einblenden
+                animationPos += 0.01; // 0.01er-Schritte
                 getImage().setTransparency((int) ((-1 * Math.pow(animationPos - 1, 4) + 1) * 255));
-            } else {
-                animationPos = Math.min(1, animationPos + 0.04);
+            } else { // Ausblenden
+                animationPos = Math.min(1, animationPos + 0.04); // 0.04er-Schritte bis maximal 1
                 getImage().setTransparency((int) (Math.pow(animationPos - 1, 4) * 255));
-                if (animationPos == 1)
+
+                if (animationPos == 1) // Entfernen
                     getWorld().removeObject(this);
             }
         }
     }
 
+    /**
+     * Blendet den Hintergrund animiert aus und entfernt ihn.
+     */
     public void hide() {
         if (visible) {
             visible = false;

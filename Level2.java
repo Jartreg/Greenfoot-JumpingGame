@@ -1,3 +1,6 @@
+/**
+ * Das zweite Level des Spiels
+ */
 public class Level2 extends Level {
     public Level2(int levelNumber) {
         super(levelNumber);

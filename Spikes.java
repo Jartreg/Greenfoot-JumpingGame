@@ -1,34 +1,48 @@
 import greenfoot.Color;
 import greenfoot.GreenfootImage;
 
+/**
+ * Stacheln, bei denen der Spieler, wenn er sie berührt, das Level verloren hat.
+ */
 public class Spikes extends RelativeActor {
-    public Spikes(String direction, int cells) {
-        this(Direction.valueOf(direction.toUpperCase()), cells);
-    }
-
+    /**
+     * Erstellt eine bestimmte Anzahl an Stacheln in eine bestimmte Richtung
+     * @param direction die Richtung
+     * @param cells die Anzahl der Stacheln
+     */
     public Spikes(Direction direction, int cells) {
         this(direction, cells, Color.LIGHT_GRAY);
     }
 
+    /**
+     * Erstellt eine bestimmte Anzahl an Stacheln in eine bestimmte Richtung
+     * @param direction die Richtung
+     * @param cells die Anzahl der Stacheln
+     * @param color die Farbe der Stacheln
+     */
     public Spikes(Direction direction, int cells, Color color) {
         int length = GameWorld.CELL_SIZE * cells;
         int thickness = GameWorld.CELL_SIZE / 2;
 
+        // Ein Bild, auf dem die Stacheln alle nach oben zeigen
         GreenfootImage spikes = new GreenfootImage(length, length);
+        // bei links unt unten muss das Licht anders gezeichnet werden
         boolean invertLight = direction == Direction.LEFT || direction == Direction.BOTTOM;
-        paintSpikes(spikes, cells, color, invertLight);
+        paintSpikes(spikes, cells, color, invertLight); // zeichnen
 
+        // Das eigentliche Bild
         GreenfootImage image;
         switch (direction) {
             case TOP:
             case BOTTOM:
-                image = new GreenfootImage(length, thickness);
+                image = new GreenfootImage(length, thickness); // Horizontal
                 break;
             default: // LEFT || RIGHT
-                image = new GreenfootImage(thickness, length);
+                image = new GreenfootImage(thickness, length); // Vertikal
                 break;
         }
 
+        // Das erste Bild wird gedreht, um zur Richtung zu passen
         switch (direction) {
             case TOP:
                 image.drawImage(spikes, 0, 0);
@@ -50,13 +64,19 @@ public class Spikes extends RelativeActor {
         setImage(image);
     }
 
+    /**
+     * Zeichnet die Stacheln nach oben zeigend
+     * @param image das Bild, auf das die Stacheln gezeichnet werden sollen
+     * @param length die Anzahl an Stacheln
+     * @param color die Farbe der Stacheln
+     * @param invertLight ob die schattigen und beleuchteten Kanten vertauscht werden sollen (für's Drehen)
+     */
     private void paintSpikes(GreenfootImage image, int length, Color color, boolean invertLight) {
         int cellSize = GameWorld.CELL_SIZE;
         int height = cellSize / 2;
 
-        Color rigingEdge = invertLight ? color.darker() : color.brighter();
+        Color risingEdge = invertLight ? color.darker() : color.brighter();
         Color fallingEdge = invertLight ? color.brighter() : color.darker();
-
 
         for (int i = 0; i < length; i++) {
             int x = i * cellSize;
@@ -73,12 +93,15 @@ public class Spikes extends RelativeActor {
                     height
             };
 
+            // Hintergrund
             image.setColor(color);
             image.fillPolygon(xPoints, yPoints, 3);
 
-            image.setColor(rigingEdge);
+            // Beleuchtete Kante
+            image.setColor(risingEdge);
             image.drawLine(xPoints[0], yPoints[0], xPoints[1], yPoints[1]);
 
+            // Schattige Kante
             image.setColor(fallingEdge);
             image.drawLine(xPoints[1], yPoints[1], xPoints[2], yPoints[2]);
         }
@@ -91,10 +114,13 @@ public class Spikes extends RelativeActor {
 
     @Override
     protected boolean performTargetCollision(GravityActor source, boolean horizontalCollision, boolean verticalCollision) {
-        ((Character) source).spikeDamage();
+        ((Character) source).spikeDamage(); // Den Spieler benachrichtigen
         return true;
     }
 
+    /**
+     * Die Richtungen, in die Stacheln zeigen können
+     */
     public enum Direction {
         TOP,
         RIGHT,

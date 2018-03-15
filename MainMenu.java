@@ -2,6 +2,10 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+/**
+ * Das Hauptmenü
+ * kann durch drüchen der ESC-Taste erreicht werden.
+ */
 public class MainMenu extends Menu {
     private final Level currentLevel;
 
@@ -13,6 +17,7 @@ public class MainMenu extends Menu {
     private static String[] createMenuItems(GameWorld world) {
         ArrayList<String> items = new ArrayList<>();
 
+        // Nur wenn de Spieler dieses Level gewonnen hat und man auch weitergehen kann
         if (world.getCurrentLevel().isCompleted() && world.getNextLevel() != null)
             items.add("Nächstes Level");
 
@@ -28,10 +33,12 @@ public class MainMenu extends Menu {
 
     @Override
     public void setVisible(boolean visible) {
-        if (visible && getWorld().getCurrentLevel() != currentLevel)
+        if (visible && getWorld().getCurrentLevel() != currentLevel) {
+            // Wenn das Level geändert wurde (im Levelmenü) direkt zurückgehen
             back();
-        else
+        } else {
             super.setVisible(visible);
+        }
     }
 
     @Override
@@ -58,6 +65,7 @@ public class MainMenu extends Menu {
     }
 
     private void takeScreenShot() {
+        // Screenshot speichern und zurückgehen
         File file = GameWorld.selectScreenshotFile();
         if (file != null) {
             GameWorld.saveScreenshot(getWorld().createScreenshot(), file);

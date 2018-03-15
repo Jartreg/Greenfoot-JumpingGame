@@ -1,6 +1,9 @@
 import greenfoot.Color;
 import greenfoot.GreenfootImage;
 
+/**
+ * Ein Osterei
+ */
 public class EasterEgg extends RelativeActor {
     public EasterEgg() {
         int width = GameWorld.CELL_SIZE;
@@ -14,11 +17,12 @@ public class EasterEgg extends RelativeActor {
 
     @Override
     public boolean shouldCollideWith(RelativeActor actor) {
-        return actor instanceof Character;
+        return actor instanceof Character; // Nur der Spieler
     }
 
     @Override
     protected boolean performTargetCollision(GravityActor source, boolean horizontalCollision, boolean verticalCollision) {
+        // Entfernen und dem Spieler mitteilen
         getWorld().removeObject(this);
         ((Character) source).easterEggCollected();
         return true;

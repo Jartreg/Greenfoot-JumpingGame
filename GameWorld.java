@@ -11,6 +11,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Stack;
 
+/**
+ * Die Spielwelt
+ */
 public class GameWorld extends World {
     public static final int CELL_SIZE = 16;
     public static final int GRAVITY = 1;
@@ -46,7 +49,7 @@ public class GameWorld extends World {
 
     public GreenfootImage completedScreenshot;
 
-    public GameWorld(Level level) {
+    public GameWorld() {
         super(600, 400, 1, false);
         setPaintOrder(
                 Menu.class,
@@ -63,26 +66,24 @@ public class GameWorld extends World {
                 WorldBackground.class
         );
 
+        // EggCounter und Hintergrund hinzufügen
         hudActors.add(eggCounter);
         addObject(eggCounter, 0, 0);
         addObject(background, 0, 0);
 
-        setCurrentLevel(level == null ? getLevels()[0] : level);
+        setCurrentLevel(getLevels()[0]);
         Greenfoot.start();
-    }
-
-    public GameWorld() {
-        this(null);
     }
 
     @Override
     public void act() {
+        // Tasten für Menüs
         String key = Greenfoot.getKey();
         if (key != null) {
             if (key.equals("escape")) {
-                if (menuStack.isEmpty()) {
+                if (menuStack.isEmpty()) { // Hauptmenü öffnen
                     pushMenu(new MainMenu(this));
-                } else {
+                } else { // Eine Ebene zurück
                     menuStack.peek().back();
                 }
             }
@@ -91,7 +92,10 @@ public class GameWorld extends World {
                 menuStack.peek().keyPressed(key);
         }
 
+        // Erschütterung
         if ((gameRunning || levelCompleted) && shakeTime > 0) {
+            // Position berechnen und den RelativeActors mitteilen
+
             shakeOffsetX = Greenfoot.getRandomNumber(shakeAmount) - shakeAmount / 2;
             shakeOffsetY = Greenfoot.getRandomNumber(shakeAmount) - shakeAmount / 2;
 
@@ -106,7 +110,25 @@ public class GameWorld extends World {
         }
     }
 
+    /**
+     * Gibt die vorhandenen Levels zurück
+     * @return  die vorhandenen Levels
+     */
+    public Level[] getLevels() {
+        return levels;
+    }
+
+    /**
+     * Gibt das aktuelle Level zurück
+     * @return  das aktuelle Level
+     */
+    public Level getCurrentLevel() {
+        return currentLevel;
+    }
+
     private void resetWorld() {
+        // Alles zurücksetzen
+
         for (Actor actor : getObjects(Actor.class)) {
             if (actor != background && !hudActors.contains(actor))
                 removeObject(actor);
@@ -121,30 +143,31 @@ public class GameWorld extends World {
         setMaxY(getHeight());
     }
 
-    public Level[] getLevels() {
-        return levels;
-    }
-
-    public Level getCurrentLevel() {
-        return currentLevel;
-    }
-
+    /**
+     * Setzt das aktuelle Level
+     * @param newLevel das neue Level
+     */
     public void setCurrentLevel(Level newLevel) {
-        if (currentLevel != null) {
+        if (currentLevel != null) { // Zurücksetzen
             resetWorld();
         }
 
+        // Level einrichten
         currentLevel = newLevel;
         eggCounter.setEggCount(0);
         levelCompleted = false;
         completedScreenshot = null;
 
+        // Level bauen
         if (currentLevel != null) {
             currentLevel.reset();
             currentLevel.buildWorld(this);
         }
     }
 
+    /**
+     * Setzt das aktuelle Level zurück
+     */
     public void resetLevel() {
         if (currentLevel == null)
             return;
@@ -152,12 +175,18 @@ public class GameWorld extends World {
         setCurrentLevel(currentLevel);
     }
 
+    /**
+     * Gibt das nächste Level zurück oder <code>null</code> wenn dieses das letzte ist.
+     * @return das nächste Level
+     */
     public Level getNextLevel() {
         Level currentLevel = getCurrentLevel();
 
+        // Kein aktuelles Level -> kein nächstes Level
         if (currentLevel == null)
             return null;
 
+        // Aktuelles suchen und nächstes zurückgeben
         for (int i = 0; i < levels.length; i++) {
             if (levels[i] == currentLevel && levels.length > i + 1)
                 return levels[i + 1];
@@ -166,6 +195,10 @@ public class GameWorld extends World {
         return null;
     }
 
+    /**
+     * Beendet das aktuelle Level
+     * @param successfully ob das Level gewonnen wurde
+     */
     public void levelCompleted(boolean successfully) {
         if (levelCompleted)
             return;
@@ -177,18 +210,17 @@ public class GameWorld extends World {
         pushMenu(new LevelCompletedMenu(this));
     }
 
+    /**
+     * Gibt zurück, ob die aktuelle Runde in diesem Level gewonnen wurde.
+     * @return ob die Runde gewonnen wurde
+     */
     public boolean isLevelCompleted() {
         return levelCompleted;
     }
 
-    private void updateGameRunning(boolean gameRunning) {
-        this.gameRunning = gameRunning;
-
-        for (GameActor actor : getObjects(RelativeActor.class)) {
-            actor.updateGameRunning(gameRunning);
-        }
-    }
-
+    /**
+     * Teilt den Akteuren und dem Hintergrund die Position des sichtbaren Bereichs mit
+     */
     private void updateRelativeActors() {
         double x = worldX + shakeOffsetX;
         double y = worldY + shakeOffsetY;
@@ -200,11 +232,20 @@ public class GameWorld extends World {
         background.updateWorldLocation(x, y);
     }
 
+    /**
+     * Gibt die X-Koordinate des sichtbaren Bereichs zurück.
+     * @return die X-Koordinate
+     */
     public double getWorldX() {
         return worldX;
     }
 
+    /**
+     * Legt die X-Koordinate des sichtbaren Bereichs fest.
+     * @param worldX die X-Koordinate
+     */
     public void setWorldX(double worldX) {
+        // Nicht weiter bewegen
         worldX = Math.max(Math.min(worldX, maxX), minX);
 
         if (this.worldX != worldX) {
@@ -213,11 +254,20 @@ public class GameWorld extends World {
         }
     }
 
+    /**
+     * Gibt die Y-Koordinate des sichtbaren Bereichs zurück.
+     * @return die Y-Koordinate
+     */
     public double getWorldY() {
         return worldY;
     }
 
+    /**
+     * Legt die Y-Koordinate des sichtbaren Bereichs fest.
+     * @param worldY die Y-Koordinate
+     */
     public void setWorldY(double worldY) {
+        // Nicht weiter bewegen
         worldY = Math.max(Math.min(worldY, maxY), minY);
 
         if (this.worldY != worldY) {
@@ -232,7 +282,7 @@ public class GameWorld extends World {
 
     public void setMinX(double minX) {
         this.minX = minX;
-        setWorldX(getWorldX());
+        setWorldX(getWorldX()); // Aktualisieren
     }
 
     public double getMaxX() {
@@ -241,7 +291,7 @@ public class GameWorld extends World {
 
     public void setMaxX(double maxX) {
         this.maxX = maxX - getWidth();
-        setWorldX(getWorldX());
+        setWorldX(getWorldX()); // Aktualisieren
     }
 
     public double getMinY() {
@@ -250,7 +300,7 @@ public class GameWorld extends World {
 
     public void setMinY(double minY) {
         this.minY = minY;
-        setWorldY(getWorldY());
+        setWorldY(getWorldY()); // Aktualisieren
     }
 
     public double getMaxY() {
@@ -259,29 +309,44 @@ public class GameWorld extends World {
 
     public void setMaxY(double maxY) {
         this.maxY = maxY - getHeight();
-        setWorldY(getWorldY());
+        setWorldY(getWorldY()); // Aktualisieren
     }
 
-    public GameActor addRelativeActor(RelativeActor actor, double x, double y) {
-        return addRelativeActor(actor, x, y, RelativeActor.Alignment.CENTER);
+    /**
+     * Fügt einen {@link RelativeActor} zur Welt hinzu.
+     * @param actor der Actor
+     * @param x die X-Koordinate
+     * @param y die Y-Koordinate
+     */
+    public void addRelativeActor(RelativeActor actor, double x, double y) {
+        addRelativeActor(actor, x, y, RelativeActor.Alignment.CENTER);
     }
 
-    public GameActor addRelativeActor(RelativeActor actor, double x, double y, RelativeActor.Alignment alignment) {
+    /**
+     * Fügt einen {@link RelativeActor} zur Welt hinzu und richtet seine Position aus.
+     * @param actor der Actor
+     * @param x die X-Koordinate
+     * @param y die Y-Koordinate
+     * @param alignment die Ausrichtung der Position
+     */
+    public void addRelativeActor(RelativeActor actor, double x, double y, RelativeActor.Alignment alignment) {
         addObject(actor, 0, 0);
         actor.setLocation(x, y, alignment);
-        return actor;
     }
 
     @Override
     public void addObject(Actor object, int x, int y) {
+        // Position aktualisieren
         if (object instanceof RelativeActor)
             ((RelativeActor) object).updateWorldLocation(worldX, worldY);
 
+        // Status aktualisieren
         if (object instanceof GameActor)
             ((GameActor) object).updateGameRunning(gameRunning);
 
         super.addObject(object, x, y);
 
+        // Nur ein Spieler pro Welt
         if (object instanceof Character) {
             if (character != null)
                 removeObject(character);
@@ -296,9 +361,15 @@ public class GameWorld extends World {
         if (object == character)
             character = null;
 
+        // Wenn es ein Display-Actor war
         hudActors.remove(object);
     }
 
+    /**
+     * Schüttelt die Welt
+     * @param time die Zeit in Ticks
+     * @param amount die Stärke
+     */
     public void shake(int time, int amount) {
         shakeTime = Math.max(shakeTime, time);
         shakeAmount = Math.max(shakeAmount, amount);
@@ -329,77 +400,102 @@ public class GameWorld extends World {
         }
     }
 
-    public void adjustObjectsOnCells() {
-        for (RelativeActor actor : getObjects(RelativeActor.class)) {
-            int rx = actor.getImage().getWidth() / 2;
-            int ry = actor.getImage().getHeight() / 2;
-
-            actor.setLocation(
-                    Math.round((actor.getRelativeX() - rx) / CELL_SIZE) * CELL_SIZE + rx,
-                    Math.round((actor.getRelativeY() - ry) / CELL_SIZE) * CELL_SIZE + ry
-            );
-        }
-    }
-
+    /**
+     * Gibt die Spielfigur zurück
+     * @return die Spielfigur
+     */
     public Character getCharacter() {
         return character;
     }
 
+    /**
+     * Gibt den Eierzähler zurück
+     * @return der Eierzähler
+     */
+    public EggCounter getEggCounter() {
+        return eggCounter;
+    }
+
+    /**
+     * Gibt eine Liste für Actors zurück, die zwischen den Leveln nicht entfernt werden.
+     * Diese Actors bilden das Head-Up-Display (Menü, Anzeigen).
+     * @return
+     */
     public ArrayList<Actor> getHudActors() {
         return hudActors;
     }
 
+    private void updateGameRunning(boolean gameRunning) {
+        this.gameRunning = gameRunning;
+
+        for (GameActor actor : getObjects(RelativeActor.class)) {
+            actor.updateGameRunning(gameRunning);
+        }
+    }
+
+    /**
+     * Öffnet ein neues Menü
+     * @param menu das Menü
+     */
     public void pushMenu(Menu menu) {
         if (menuStack.isEmpty()) {
+            // Overlay einblenden und Spiel pausieren
             overlay = new Overlay();
             hudActors.add(overlay);
             addObject(overlay, 0, 0);
             updateGameRunning(false);
         } else {
+            // Letztes Menü ausblenden
             menuStack.peek().setVisible(false);
         }
 
+        // Aktuelles Menü anzeigen
         menuStack.push(menu);
         hudActors.add(menu);
         addObject(menu, 0, 0);
         menu.setVisible(true);
     }
 
+    /**
+     * Geht zum letzten Menü zurück oder schließt das Menü, wenn es das erste war.
+     */
     public void popMenu() {
         if (menuStack.isEmpty())
             return;
 
+        // Menü ausblenden
         Menu closedMenu = menuStack.pop();
         closedMenu.setVisible(false);
         closedMenu.close();
 
         if (menuStack.isEmpty() && overlay != null) {
+            // Overlay ausblenden und Spiel fortsetzen
             overlay.hide();
             overlay = null;
             updateGameRunning(true);
         } else {
+            // Letztes Menü anzeigen
             menuStack.peek().setVisible(true);
         }
     }
 
-    public Menu getCurrentMenu() {
-        return menuStack.isEmpty() ? null : menuStack.peek();
-    }
-
-    public EggCounter getEggCounter() {
-        return eggCounter;
-    }
-
+    /**
+     * Erstellt einem Screenshot der Welt
+     * @return der Screenshot
+     */
     public GreenfootImage createScreenshot() {
+        // Hintergrund
         GreenfootImage image = new GreenfootImage(getBackground());
 
+        // Actors
         for (Actor actor : getObjects(Actor.class)) {
-            if (!getHudActors().contains(actor)) {
+            if (!getHudActors().contains(actor)) { // Nur die zeichnen, die zum Spiel gehören
                 GreenfootImage actorImage = actor.getImage();
 
                 if (actorImage == null)
                     continue;
 
+                // Bild auf der Screenshot zeichnen
                 image.drawImage(
                         actorImage,
                         actor.getX() - actorImage.getWidth() / 2,
@@ -411,6 +507,11 @@ public class GameWorld extends World {
         return image;
     }
 
+    /**
+     * Fragt den Benutzer, wo er einen Screenshot speichern will.
+     * Als Dateiname wird <code>Screenshot.png</code> und als Speicherort der Desktop vorgschlagen.
+     * @return der Speicherort oder <code>null</code> wenn der Benutzer abbricht
+     */
     public static File selectScreenshotFile() {
         FileDialog dialog = new FileDialog((Frame) null, "Screenshot speichern", FileDialog.SAVE);
         dialog.setDirectory(System.getProperty("user.home") + "/Desktop");
@@ -422,6 +523,11 @@ public class GameWorld extends World {
         return files.length == 1 ? files[0] : null;
     }
 
+    /**
+     * Speichert einen Screenshot in einer Datei
+     * @param screenshot der Screenshot
+     * @param file die Datei
+     */
     public static void saveScreenshot(GreenfootImage screenshot, File file) {
         try {
             ImageIO.write(screenshot.getAwtImage(), "PNG", file);

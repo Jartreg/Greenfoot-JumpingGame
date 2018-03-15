@@ -1,12 +1,16 @@
 import java.util.ArrayList;
 import java.util.HashMap;
 
+/**
+ * Ein Menü zum auswählen des Levels
+ */
 public class LevelSelectionMenu extends Menu {
     private final HashMap<String, Level> levels = new HashMap<>();
 
     protected LevelSelectionMenu(Level[] levels) {
         super(createMenuItems(levels));
 
+        // Jedes Level seinem Menüeintrag zuordnen
         for (Level level : levels) {
             this.levels.put("Level " + level.getLevelNumber(), level);
         }
@@ -25,13 +29,13 @@ public class LevelSelectionMenu extends Menu {
 
     @Override
     protected void itemSelected(String item) {
-        if (item.equals("Abbrechen")) {
+        if (item.equals("Abbrechen")) { // Einfach zurückgehen
             back();
             return;
         }
 
         Level level = levels.get(item);
-        if (level != null) {
+        if (level != null) { // Level setzen und zurückgehen
             getWorld().setCurrentLevel(level);
             back();
         }

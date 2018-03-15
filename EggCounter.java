@@ -2,6 +2,9 @@ import greenfoot.Color;
 import greenfoot.GreenfootImage;
 import greenfoot.World;
 
+/**
+ * Eine Anzeige für die Anzahl der gesammelten Eier
+ */
 public class EggCounter extends GameActor {
     private int eggCount;
 
@@ -12,7 +15,7 @@ public class EggCounter extends GameActor {
     }
 
     private void update() {
-        if (getWorld().getCurrentLevel() == null) {
+        if (getWorld().getCurrentLevel() == null) { // Kein Level - kein Bild
             setImage((GreenfootImage) null);
             return;
         }
@@ -20,9 +23,9 @@ public class EggCounter extends GameActor {
         int min = getWorld().getCurrentLevel().getMinEasterEggCount();
 
         String text = Integer.toString(eggCount);
-        if (min == 0) {
+        if (min == 0) { // Ohne Minimalzahl
             text += eggCount == 1 ? " Osterei" : " Ostereier";
-        } else {
+        } else { // Mit Minimalzahl
             text += "/" + min + (min == 1 ? " Osterei" : " Ostereiern");
         }
 
@@ -34,6 +37,7 @@ public class EggCounter extends GameActor {
                 Color.DARK_GRAY
         );
 
+        // Immer 8 pixel von oben und links
         setLocation(
                 8 + image.getWidth() / 2,
                 8 + image.getHeight() / 2
@@ -41,10 +45,18 @@ public class EggCounter extends GameActor {
         setImage(image);
     }
 
+    /**
+     * Gibt die angezeigte Anzahl an gesammelten Eiern zurück.
+     * @return die Anzahl der gesammelten Eier
+     */
     public int getEggCount() {
         return eggCount;
     }
 
+    /**
+     * Legt die anzuzeigende Anzahl an gesammelten Eiern fest.
+     * @param eggCount die Anzahl der gesammelten Eier
+     */
     public void setEggCount(int eggCount) {
         this.eggCount = eggCount;
         update();

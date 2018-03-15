@@ -1,13 +1,13 @@
 import greenfoot.Color;
 import greenfoot.GreenfootImage;
 
+/**
+ * Eine Schleimwand, von der der Spieler abprallt.
+ * Beim Laufen ist der Spieler langsamer.
+ */
 public class SlimeWall extends Wall {
     public static final Color COLOR = new Color(114, 193, 114);
     public static final double FRICTION = DEFAULT_FRICTION * 1.5;
-
-    public SlimeWall() {
-        this(5, 5);
-    }
 
     public SlimeWall(int width, int height) {
         super(width, height);
@@ -19,6 +19,8 @@ public class SlimeWall extends Wall {
 
     @Override
     protected boolean performTargetCollision(GravityActor source, boolean horizontalCollision, boolean verticalCollision) {
+        // Den Spieler abprallen lassen
+
         if (horizontalCollision) {
             double vy = -source.vY;
 
